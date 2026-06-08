@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Front of House Manager — Bogie's at Depot Square</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f5f0e8;
+    --dark: #1a1410;
+    --amber: #c8860a;
+    --amber-light: #e8a020;
+    --burgundy: #6b1f2a;
+    --warm-gray: #8a7f72;
+    --rule: #c8860a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: var(--cream);
+    color: var(--dark);
+    font-family: 'Libre Baskerville', Georgia, serif;
+    min-height: 100vh;
+    padding: 0;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Aged paper texture via SVG */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 60px 60px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .masthead {
+    text-align: center;
+    margin-bottom: 48px;
+    padding-bottom: 36px;
+    border-bottom: 3px double var(--amber);
+    position: relative;
+    animation: fadeDown 0.7s ease both;
+  }
+
+  .masthead-eyebrow {
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 14px;
+  }
+
+  .masthead-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(38px, 6vw, 58px);
+    font-weight: 900;
+    line-height: 1.05;
+    color: var(--dark);
+    letter-spacing: -0.01em;
+  }
+
+  .masthead-sub {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(16px, 2.5vw, 22px);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--amber);
+    margin-top: 8px;
+    letter-spacing: 0.02em;
+  }
+
+  .masthead-rule {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 24px;
+    justify-content: center;
+  }
+
+  .masthead-rule span {
+    font-size: 20px;
+    color: var(--amber);
+  }
+
+  .rule-line {
+    flex: 1;
+    max-width: 160px;
+    height: 1px;
+    background: var(--amber);
+  }
+
+  /* Intro */
+  .intro {
+    background: var(--dark);
+    color: var(--cream);
+    padding: 32px 40px;
+    margin-bottom: 48px;
+    position: relative;
+    animation: fadeUp 0.7s 0.15s ease both;
+  }
+
+  .intro::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 1px solid rgba(200,134,10,0.35);
+    pointer-events: none;
+  }
+
+  .intro p {
+    font-size: 15px;
+    line-height: 1.85;
+    color: #d4cec6;
+  }
+
+  .intro p strong {
+    color: var(--amber-light);
+    font-weight: 700;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 44px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .section:nth-child(3) { animation-delay: 0.2s; }
+  .section:nth-child(4) { animation-delay: 0.3s; }
+  .section:nth-child(5) { animation-delay: 0.4s; }
+  .section:nth-child(6) { animation-delay: 0.5s; }
+  .section:nth-child(7) { animation-delay: 0.6s; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .section-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    color: var(--amber);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .section-rule {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, var(--amber) 0%, transparent 100%);
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 20px;
+    border-left: 4px solid var(--amber);
+    padding-left: 14px;
+    letter-spacing: -0.01em;
+  }
+
+  /* Items */
+  .item-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.55);
+    border: 1px solid rgba(200,134,10,0.15);
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .item:hover {
+    border-color: rgba(200,134,10,0.5);
+    background: rgba(255,255,255,0.85);
+  }
+
+  .item-bullet {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    background: var(--amber);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+  }
+
+  .item-bullet svg {
+    width: 10px;
+    height: 10px;
+    fill: white;
+  }
+
+  .item-text {
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: #2c2418;
+  }
+
+  .item-text strong {
+    color: var(--burgundy);
+    font-weight: 700;
+  }
+
+  /* Overall / callout grid */
+  .overall-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .overall-pill {
+    background: var(--dark);
+    color: var(--cream);
+    padding: 12px 16px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    text-align: center;
+    border: 1px solid var(--amber);
+    position: relative;
+    overflow: hidden;
+    transition: background 0.2s;
+  }
+
+  .overall-pill::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(200,134,10,0.15), transparent);
+    transition: left 0.4s;
+  }
+
+  .overall-pill:hover::after { left: 100%; }
+  .overall-pill:hover { background: #2c2010; }
+
+  /* Quote */
+  .quote-block {
+    background: var(--burgundy);
+    color: var(--cream);
+    padding: 36px 44px;
+    position: relative;
+    margin-top: 16px;
+  }
+
+  .quote-block::before {
+    content: '\201C';
+    font-family: 'Playfair Display', serif;
+    font-size: 120px;
+    color: rgba(255,255,255,0.08);
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    line-height: 1;
+  }
+
+  .quote-block::after {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border: 1px solid rgba(255,255,255,0.15);
+    pointer-events: none;
+  }
+
+  .quote-attribution {
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--amber-light);
+    margin-bottom: 16px;
+  }
+
+  .quote-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(15px, 2.2vw, 19px);
+    line-height: 1.7;
+    font-style: italic;
+    position: relative;
+    z-index: 1;
+  }
+
+  .quote-text strong {
+    font-style: normal;
+    font-weight: 900;
+    color: #ffc84a;
+  }
+
+  /* Footer */
+  .doc-footer {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 3px double var(--amber);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeUp 0.6s 0.7s ease both;
+  }
+
+  .doc-footer-left {
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--warm-gray);
+    text-transform: uppercase;
+  }
+
+  .doc-footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--dark);
+    letter-spacing: -0.01em;
+  }
+
+  .doc-footer-logo span { color: var(--amber); }
+
+  /* Animations */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    .page { padding: 32px 24px 60px; }
+    .intro { padding: 24px 24px; }
+    .overall-grid { grid-template-columns: 1fr; }
+    .quote-block { padding: 28px 28px; }
+    .doc-footer { flex-direction: column; gap: 12px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Masthead -->
+  <div class="masthead">
+    <div class="masthead-eyebrow">Position Description &nbsp;·&nbsp; Bogie's at Depot Square &nbsp;·&nbsp; Hampton, NH</div>
+    <div class="masthead-title">Front of House<br>Manager</div>
+    <div class="masthead-sub">Leadership &amp; Operations</div>
+    <div class="masthead-rule">
+      <div class="rule-line"></div>
+      <span>✦</span>
+      <div class="rule-line"></div>
+    </div>
+  </div>
+
+  <!-- Intro -->
+  <div class="intro">
+    <p>This is a <strong>management position</strong> for the Bogie's at Depot Square business. Position requires management skills including leading by example, preparing for the venue's daily operations, and planning for upcoming venue events. Communicating with staff and kitchen is vital for success. Taking initiative, problem solving, and making sound business decisions when an immediate decision is required. Maintaining a front of house venue that is <strong>clean and organized</strong> with a place for all products and front of house items. Always presenting the business in a positive light and keeping personal issues outside the venue.</p>
+  </div>
+
+  <!-- Section 1: Daily Staffing -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">§ 01</div>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-title">Daily Staffing &amp; Operations</div>
+    <ul class="item-list">
+      <li class="item">
+        <div class="item-bullet"><svg viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2"/></svg></div>
+        <div class="item-text">Manage the proper level of labor needed to carry out daily operations. Ensure the proper staff member is in place to perform.</div>
+      </li>
+      <li class="item">
+        <div class="item-bullet"><svg viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2"/></svg></div>
+        <div class="item-text">Understand specials of the day including soups, entrées, and desserts. Staff should know what the kitchen is trying to sell and make proper suggestions to guests.</div>
+      </li>
+      <li class="item">
+        <div class="item-bullet"><svg viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2"/></svg></div>
+        <div class="item-text"><strong>Greet guests ASAP</strong> when entering the venue. The touch will reduce walk-ups and leave people.</div>
+      </li>
+      <li class="item">
+        <div class="item-bullet"><svg viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2"/></svg></div>
+        <div class="item-text">Serve drinks and beverages to patrons in a timely manner.</div>
+      </li>
+      <li class="item">
+        <div class="item-bullet"><svg viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2"/></svg></div>
+        <div class="item-text">Put food orders in and run food to guests in a timely and efficient manner.</div>
+      </li>
+      <li class="item">
+        <div class="item-bullet"><svg viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2"/></svg></div>
+        <div class="item-text">Maintain a <strong>high standard of presentation</strong> of food and drink products — proper plate setups including sauces, condiments, napkins, and silverware.</div>
+      </li>
+      <li class="item">
+        <div class="item-bullet"><svg viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2"/></svg></div>
+        <div class="item-text">Efficiently keep tables clear of empty baskets and wipe down tables after patrons' departure.</div>
+      </li>
+      <li class="item">
+        <div class="item-bullet"><svg viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2"/></svg></div>
+        <div class="item-text">Always maintain clean floors during the day and a <strong>100% sweeper at end of day</strong> with mopping if necessary.</div>
+      </li>
+      <li class="item">
+        <div class="item-bullet"><svg viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2"/></svg></div>
+        <div class="item-text">Oversee daily cleaning and ongoing cleaning maintenance programs for the front of house including the event room.</div>
+      </li>
+      <li class="item">
+        <div class="item-bullet"><svg viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2"/></svg></div>
+        <div class="item-text">End of day trash removal to outside dumpsters.</div>
+      </li>
+      <li class="item">
+        <div class="item-bullet"><svg viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2"/></svg></div>
+        <div class="item-text">Oversee daily remit and tip distribution process. Communicate with owners with a <strong>reconciliation of changes to remit on close-out report</strong>.</div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Section 2: Product -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">§ 02</div>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-title">Order of Product Responsibility</div>
+    <ul class="item-list">
+      <li class="item">
+        <div class="item-bullet"><svg viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2"/></svg></div>
+        <div class="item-text">Order and pick up liquor for the venue. <strong>Communicate to owners</strong> of all issues including drink specials that require unique and expensive liquor purchases.</div>
+      </li>
+      <li class="item">
+        <div class="item-bullet"><svg viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2"/></svg></div>
+        <div class="item-text">Maintain and order beer products by working with distributors — ensure products are not dated, kegs are refrigerated, empty kegs are returned weekly, and a stock beer coaster is maintained.</div>
+      </li>
+      <li class="item">
+        <div class="item-bullet"><svg viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2"/></svg></div>
+        <div class="item-text">Walk-in cooler beer is organized and properly rotated. Work with kitchen staff on the organization of product in this cooler.</div>
+      </li>
+      <li class="item">
+        <div class="item-bullet"><svg viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2"/></svg></div>
+        <div class="item-text">All bar-related products (juices, sauces, fruits, milks, creams, etc.) need to be communicated timely — text or photo of products needed — to owners so an order can be made.</div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Section 3: Hiring -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">§ 03</div>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-title">Hiring, Scheduling, Discipline &amp; Termination</div>
+    <ul class="item-list">
+      <li class="item">
+        <div class="item-bullet"><svg viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2"/></svg></div>
+        <div class="item-text">Responsible for the hiring of bartenders, servers, barbacks, and runners. Work within a <strong>labor dollar budget</strong> that considers business effectiveness, sales volume, and adequate compensation.</div>
+      </li>
+      <li class="item">
+        <div class="item-bullet"><svg viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2"/></svg></div>
+        <div class="item-text">Prepare a <strong>weekly schedule</strong> based on events of the week. Owners will supply an updated schedule — use the app <em>Time Tree</em>.</div>
+      </li>
+      <li class="item">
+        <div class="item-bullet"><svg viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2"/></svg></div>
+        <div class="item-text">Communicate with each staff member what their position responsibilities are and follow up when those responsibilities are not met. Discipline, including termination if necessary, is required when tasks are not completed to business satisfaction.</div>
+      </li>
+      <li class="item">
+        <div class="item-bullet"><svg viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2"/></svg></div>
+        <div class="item-text"><strong>Drinking on the job is a ground for immediate termination.</strong></div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Section 4: Venue -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">§ 04</div>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-title">Venue Presentation</div>
+    <ul class="item-list">
+      <li class="item">
+        <div class="item-bullet"><svg viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2"/></svg></div>
+        <div class="item-text">Maintain the front of house set-up and design, and <strong>in coordination with the owners</strong> make changes that are consistent with the venue's concept.</div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Section 5: Overall -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">§ 05</div>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-title">Overall — What We're Looking For</div>
+
+    <div class="overall-grid">
+      <div class="overall-pill">STRONG Communication Skills</div>
+      <div class="overall-pill">Team Player &amp; Leader</div>
+      <div class="overall-pill">Team Atmosphere Builder</div>
+      <div class="overall-pill">Lead by Example</div>
+      <div class="overall-pill" style="grid-column: 1 / -1;">Preparation is 100% Required</div>
+    </div>
+
+    <div class="quote-block">
+      <div class="quote-attribution">— Bobby Knight &nbsp;·&nbsp; Legendary Basketball Coach, Indiana University</div>
+      <div class="quote-text">
+        "The <strong>will to be successful</strong> is not nearly as important as <strong>the will to prepare</strong> to be successful. Everyone wants to be successful but not everyone wants to <strong>prepare</strong> to be successful."
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="doc-footer">
+    <div class="doc-footer-left">Confidential &nbsp;·&nbsp; Internal Document</div>
+    <div class="doc-footer-logo">Bogie's<span>.</span></div>
+    <div class="doc-footer-left">Depot Square &nbsp;·&nbsp; Hampton, NH</div>
+  </div>
+
+</div>
+</body>
+</html>
